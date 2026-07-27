@@ -1,0 +1,10 @@
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.bin binary
+*.elf binary
+firmware/src/sound_model.h -whitespace
+firmware/src/mfcc_norm_params.h -whitespace
+firmware/src/doorbell_feature_test.h -whitespace

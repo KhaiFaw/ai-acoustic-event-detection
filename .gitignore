@@ -1,0 +1,39 @@
+# RT-Thread Studio and IDE output
+Debug/
+build/
+RTE/
+Listings/
+Objects/
+.settings/
+.vscode/
+
+# Generated build artifacts
+*.o
+*.obj
+*.elf
+*.axf
+*.map
+*.bin
+*.hex
+*.d
+*.pyc
+__pycache__/
+
+# Local SDK/package folders
+rt-thread/
+libraries/
+packages/
+
+# Local paths, caches, and temporary files
+tmp/
+*.log
+.DS_Store
+Thumbs.db
+
+# Secrets and local environment files
+.env
+.env.*
+*.pem
+*.key
+credentials.*
+secrets.*
