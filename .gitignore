@@ -18,6 +18,8 @@ Objects/
 *.d
 *.pyc
 __pycache__/
+.venv/
+.pytest_cache/
 
 # Local SDK/package folders
 rt-thread/
