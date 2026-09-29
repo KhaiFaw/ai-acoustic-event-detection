@@ -6,7 +6,7 @@ An embedded prototype that recognises six domestic sound categories on a Renesas
 
 **Status:** application-layer firmware snapshot, with thesis-era evaluation and a later LCD extension. A complete BSP, training pipeline and evaluation audio are not included.
 
-> Local maintenance found and corrected an input-scale mismatch between the embedded model and firmware. Artifact checks pass; the corrected firmware has **not** been rebuilt or evaluated on the board. The historical 14/16 result below is not a measurement of this revision.
+> Maintenance corrected an input-scale mismatch between the embedded model and firmware. **16 host tests and a fresh local full-BSP build pass.** The corrected firmware has not been flashed or evaluated on the board. The historical 14/16 result below is not a measurement of this revision. See the [software verification record](docs/software-validation.md).
 
 [Core implementation](firmware/src/hal_entry.c) · [Model runtime](firmware/src/cpp_test.cpp) · [Results](#validation-and-results) · [Integration](firmware/README.md) · [Portfolio](https://github.com/KhaiFaw)
 
@@ -49,7 +49,7 @@ The model input is `[1, 39, 61, 1]`; the actual output is `[1, 1, 1, 6]`. The C+
 
 ![Photograph of the MAX9814 module connections](docs/images/microphone-setup.jpeg)
 
-The exact tested SDK/toolchain revisions and physical ADC pin still need an owner-confirmed clean-build record. Follow [firmware integration notes](firmware/README.md); this repository cannot be flashed by itself.
+A fresh local build with Arm GNU 13.3.Rel1 is recorded in the [software verification notes](docs/software-validation.md). It uses an isolated copy of the owner's existing Titan BSP and configuration, which are not bundled here. Physical ADC wiring and runtime behaviour remain unverified for this revision. Follow [firmware integration notes](firmware/README.md); this repository cannot be flashed by itself.
 
 ## Validation and results
 
@@ -59,7 +59,8 @@ The exact tested SDK/toolchain revisions and physical ADC pin still need an owne
 | Embedded model, read from header | **117,136 bytes / 114.39 KiB** | Model artifact size, not total flash usage |
 | Tensor arena configured in code | **180 KiB** | One allocation; excludes capture/DSP buffers, stacks and other RAM |
 | Historical sample-rate observation | Approximately **15,904 Hz** | Previously documented board observation; not remeasured here |
-| Current artifact verification | **7 checks pass** | Model structure, paired normalization and firmware quantization; no board execution |
+| Current artifact verification | **16 host tests pass** | Model structure, normalization, firmware quantization and malformed-metadata regressions; no board execution |
+| Current local firmware build | **Full staged BSP build passes** | Corrected application compiled and linked; no flash, inference or acoustic evaluation |
 
 ![Historical confusion matrix showing 14 correct predictions across 16 board-recorded windows](docs/images/confusion-matrix.png)
 
@@ -82,7 +83,7 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
 
-On Linux/macOS use `.venv/bin/python`. The proposed Actions workflow runs these same checks without board SDKs. It does not compile the firmware, run the CNN or measure acoustic accuracy.
+On Linux/macOS use `.venv/bin/python`. The Actions workflow runs these same checks without board SDKs. It does not compile the firmware, run the CNN or measure acoustic accuracy. The separately recorded [local firmware build](docs/software-validation.md) uses the full existing BSP.
 
 ## Design decisions and limitations
 
@@ -103,11 +104,11 @@ On Linux/macOS use `.venv/bin/python`. The proposed Actions workflow runs these 
 | [LCD UI](firmware/src/lcd_alert_ui.c) | Monitoring, verification, alert and error displays |
 | [project configuration](firmware/project-config/) | FSP/RT-Thread configuration snapshots |
 | [contract checker](tools/check_model_contract.py) / [tests](tests/test_model_contract.py) | Host-side artifact checks and malformed-input regressions |
-| [verification](docs/verification.md) | Current evidence boundary and board acceptance steps |
+| [verification](docs/verification.md) / [software validation](docs/software-validation.md) | Evidence boundary, recorded local build and future board acceptance steps |
 
 ## Next validation steps
 
-Rebuild with a recorded BSP/toolchain; compare raw features and model output against the paired training pipeline; retest the quantization correction. Then capture a larger, balanced board dataset and measure missed-event rate, false alerts, latency and total RAM. Overlapping acquisition is a future improvement, not an implemented feature.
+The corrected application now compiles and links against the local Titan BSP. Future hardware work is to confirm the generated target/linker settings, compare raw features and model output against the paired training pipeline, and retest the quantization correction on the board. Then capture a larger, balanced board dataset and measure missed-event rate, false alerts, latency and total RAM. Overlapping acquisition is a future improvement, not an implemented feature.
 
 ## Attribution and license
 
