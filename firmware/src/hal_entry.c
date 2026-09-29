@@ -44,7 +44,8 @@
 
 #define MFCC_COEFF_COUNT 13
 
-#define MODEL_INPUT_SCALE       0.088802f
+/* Paired with sound_model.h; verified by tools/check_model_contract.py. */
+#define MODEL_INPUT_SCALE       0.053331278f
 #define MODEL_INPUT_ZERO_POINT  (3)
 
 /* ============================================================
